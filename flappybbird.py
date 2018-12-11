@@ -5,7 +5,7 @@ from time import sleep
 sense = SenseHat()
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
-YELLOW = (197, 179, 88)
+YELLOW = (255, 255, 0)
 
 x = 0
 y = 0
@@ -34,7 +34,8 @@ def move_pipes(matrix):
             row[i] = row[i + 1]
         row[-1] = BLUE
     return matrix
-    
+
+
 def draw_astronaut(event):
     global y
     global x
@@ -46,25 +47,28 @@ def draw_astronaut(event):
             y += 1
         elif event.direction == "right" and x < 7:
             x += 1
-        elif event.direction == "left" and x > 7:
+        elif event.direction == "left" and x > 0:
             x -= 1
-    sense.set_pixel(x, y, YELLOW)    
+    sense.set_pixel(x, y, YELLOW)
+
+    
+def check_collision(matrix):
+    if matrix[y][x] == RED:
+        return True
+    else:
+        return False
+
 
 sense.stick.direction_any = draw_astronaut
 
 while True:
-  matrix = gen_pipes(matrix)
-  for i in range(3):
-      sense.set_pixels(flatten(matrix))
-      matrix = move_pipes(matrix)
-      sense.set_pixel(x,y,YELLOW)
-      sleep(1)
-    
-
-
-
-
-
-
-
-
+    matrix = gen_pipes(matrix)
+    if check_collision(matrix):
+        break
+    for i in range(3):
+        matrix = move_pipes(matrix)
+        sense.set_pixels(flatten(matrix))
+        sense.set_pixel(x, y, YELLOW)   
+        if check_collision(matrix):
+            break
+        sleep(1)
