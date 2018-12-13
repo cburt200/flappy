@@ -3,17 +3,24 @@ from random import randint
 from time import sleep
 
 sense = SenseHat()
+
 RED = (0, 255, 0)
 BLUE = (0, 0, 0)
 YELLOW = (255,215,0)
 
-game_over = False
 
 x = 0
 y = 0
 
 matrix = [[BLUE for column in range(8)] for row in range(8)]
 
+game_over = False
+
+while game_over==False:
+    o = sense.get_orientation()
+    pitch = o["pitch"]
+    roll = o["roll"]
+    sense.set_pixels(sum(matrix,[]))
 
 def flatten(matrix):
     flattened = [pixel for row in matrix for pixel in row]
@@ -38,19 +45,13 @@ def move_pipes(matrix):
     return matrix
 
 
-def draw_astronaut(event):
-    global y
-    global x
+def draw_astronaut(pitch, roll, x,y):
+    new_x = x
+    new_y = y
+    
     sense.set_pixel(x, y, BLUE)
-    if event.action == "pressed":
-        if event.direction == "up" and y > 0:
-            y -= 1
-        elif event.direction == "down" and y < 7:
-            y += 1
-        elif event.direction == "right" and x < 7:
-            x += 1
-        elif event.direction == "left" and x > 0:
-            x -= 1
+    if 1<pitch<179:
+        new_x -=1
     sense.set_pixel(x, y, YELLOW)
     if matrix[y][x]==RED:
         game_over = True
@@ -63,7 +64,7 @@ def check_collision(matrix):
         return False
 
 
-sense.stick.direction_any = draw_astronaut
+
 
 while not game_over:
     matrix = gen_pipes(matrix)
