@@ -1,6 +1,7 @@
 from sense_hat import SenseHat
 from random import randint
 from time import sleep
+import time
 
 sense = SenseHat()
 RED = (0, 255, 0)
@@ -75,6 +76,6 @@ while not game_over:
         sense.set_pixel(x, y, YELLOW)   
         if check_collision(matrix):
             game_over = True
-        sleep(1)
+        sleep(.25)
 
 sense.show_message('You lose!')

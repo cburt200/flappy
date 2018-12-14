@@ -16,11 +16,7 @@ matrix = [[BLUE for column in range(8)] for row in range(8)]
 
 game_over = False
 
-while game_over==False:
-    o = sense.get_orientation()
-    pitch = o["pitch"]
-    roll = o["roll"]
-    sense.set_pixels(sum(matrix,[]))
+
 
 def flatten(matrix):
     flattened = [pixel for row in matrix for pixel in row]
